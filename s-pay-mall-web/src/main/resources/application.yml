@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: s_pay_mall
+    version: 1.0.0
+server:
+  port: 8092
+
+weixin:
+  config:
+    originalid: gh_19f26f0891cf
+    token: b806
+    appid: wx0722f6e980b51e47
+    secret: 383454c09c935626e41c60bdfb70d73a
+    template_id: RbEZ2jo47dQmF4A7_Ku7RsDy1x_5by6bk1Ox6rPCl4Y
+
+
+# 日志打印
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
