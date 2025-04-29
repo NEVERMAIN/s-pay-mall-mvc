@@ -41,6 +41,7 @@ public class UserOrderService implements IUserOrderService {
     }
 
     @Override
+    @Transactional
     public UserOrderRes createOrder(ShopCartReq shopCartReq) {
 
         UserOrder userOrderReq = new UserOrder();
@@ -70,6 +71,28 @@ public class UserOrderService implements IUserOrderService {
         List<Product> productList = productDao.queryProductByIds(productIds);
 
         // 计算每一个产品的总价
+        List<OrderItem> orderItemList = calculateOrderItems(productList, collect, orderId);
+
+        // 1.1 计算产品总价
+        double totalAmount = orderItemList.stream().mapToDouble(OrderItem::getTotalPrice).sum();
+
+        // 2.创建订单
+        UserOrder userOrder = createUserOrder(shopCartReq, orderId, totalAmount);
+
+        // 3.保存订单和订单项
+        saveOrderAndItems(userOrder, orderItemList);
+
+        // 4.创建支付单
+        // Todo 对接支付宝,创建支付单
+
+        // 5.返回结果
+        UserOrderRes userOrderRes = new UserOrderRes();
+        BeanUtils.copyProperties(userOrder, userOrderRes);
+
+        return userOrderRes;
+    }
+
+    private static List<OrderItem> calculateOrderItems(List<Product> productList, Map<String, Integer> collect, String orderId) {
         List<OrderItem> orderItemList = productList.stream().map(product -> {
             OrderItem orderItem = new OrderItem();
             Integer quantity = collect.get(product.getProductId());
@@ -83,11 +106,17 @@ public class UserOrderService implements IUserOrderService {
             orderItem.setUpdateTime(new Date());
             return orderItem;
         }).toList();
+        return orderItemList;
+    }
 
-        // 1.1 计算产品总价
-        double totalAmount = orderItemList.stream().mapToDouble(OrderItem::getTotalPrice).sum();
+    private void saveOrderAndItems(UserOrder userOrder, List<OrderItem> orderItemList) {
+        userOrderDao.insert(userOrder);
+        if (!orderItemList.isEmpty()) {
+            orderItemDao.batchInsert(orderItemList);
+        }
+    }
 
-        // 2.创建订单
+    private static UserOrder createUserOrder(ShopCartReq shopCartReq, String orderId, double totalAmount) {
         UserOrder userOrder = new UserOrder();
         userOrder.setOrderId(orderId);
         userOrder.setUserId(shopCartReq.getUserId());
@@ -97,34 +126,7 @@ public class UserOrderService implements IUserOrderService {
         userOrder.setStatus(UserOrderStatusVO.CREATE.getCode());
         userOrder.setCreateTime(new Date());
         userOrder.setUpdateTime(new Date());
-
-        // 3.保存订单和订单项
-        // TODO 事务失效问题要解决
-        insertOrderAndOrderItem(userOrder, orderItemList);
-
-        // 4.创建支付单
-        // Todo 对接支付宝,创建支付单
-
-        // 5.返回结果
-        UserOrderRes userOrderRes = new UserOrderRes();
-        BeanUtils.copyProperties(userOrder, userOrderRes);
-
-        return userOrderRes;
-    }
-
-
-    @Transactional
-    @Override
-    public void insertOrderAndOrderItem(UserOrder userOrder, List<OrderItem> orderItemList) {
-        try {
-            // 1.保存到数据库
-            userOrderDao.insert(userOrder);
-            // 2. 保存订单项
-            orderItemDao.batchInsert(orderItemList);
-        } catch (Exception e) {
-            log.error("保存订单失败: ", e);
-            throw new RuntimeException();
-        }
+        return userOrder;
     }
 
 

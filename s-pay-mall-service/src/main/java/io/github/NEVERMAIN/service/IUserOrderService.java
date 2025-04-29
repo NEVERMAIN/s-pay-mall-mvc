@@ -10,6 +10,4 @@ import java.util.List;
 public interface IUserOrderService {
 
     UserOrderRes createOrder(ShopCartReq shopCartReq);
-
-    void insertOrderAndOrderItem(UserOrder userOrder, List<OrderItem> orderItemList);
 }
