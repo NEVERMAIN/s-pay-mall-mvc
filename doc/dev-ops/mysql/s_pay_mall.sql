@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `order_item`;
 CREATE TABLE `order_item`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '订单项ID，系统内部主键',
   `order_id` int UNSIGNED NOT NULL COMMENT '所属订单ID',
-  `product_id` int UNSIGNED NULL DEFAULT NULL COMMENT '关联商品ID',
+  `product_id` varchar(64)  NULL DEFAULT NULL COMMENT '关联商品ID',
   `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '下单时商品名称（快照）',
   `product_price` decimal(10, 2) NOT NULL COMMENT '下单时商品单价（快照）',
   `quantity` int UNSIGNED NOT NULL COMMENT '购买数量',
@@ -77,7 +77,7 @@ CREATE TABLE `order_refund`  (
 DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `product_id` bigint UNSIGNED NOT NULL COMMENT '商品ID',
+  `product_id` varchar(64)  NOT NULL COMMENT '商品ID',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '商品名称',
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '商品描述',
   `price` decimal(10, 2) NOT NULL COMMENT '商品价格（单位：元）',

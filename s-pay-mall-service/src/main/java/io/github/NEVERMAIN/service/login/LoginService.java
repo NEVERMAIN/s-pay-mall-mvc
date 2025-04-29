@@ -1,7 +1,7 @@
 package io.github.NEVERMAIN.service.login;
 
 import com.google.common.cache.Cache;
-import io.github.NEVERMAIN.domain.po.WxTemplateMessageVO;
+import io.github.NEVERMAIN.domain.vo.WxTemplateMessageVO;
 import io.github.NEVERMAIN.domain.req.WxQrcodeCreateReq;
 import io.github.NEVERMAIN.domain.res.WxAccessTokenRes;
 import io.github.NEVERMAIN.domain.res.WxQrcodeCreateRes;
@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
-import retrofit2.Response;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package io.github.NEVERMAIN.domain.po;
+package io.github.NEVERMAIN.domain.vo;
 
 import java.util.HashMap;
 import java.util.Map;

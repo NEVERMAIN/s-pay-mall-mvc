@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.NEVERMAIN.dao.UserOrderDao">
+
+    <resultMap id="UserOrderMap" type="io.github.NEVERMAIN.domain.po.UserOrder">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+        <result property="paymentTransactionId" column="payment_transaction_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="orderTime" column="order_time" jdbcType="DATE"/>
+        <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
+        <result property="paidAmount" column="paid_amount" jdbcType="DECIMAL"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="payUrl" column="pay_url" jdbcType="VARCHAR"/>
+        <result property="payTime" column="pay_time" jdbcType="DATE"/>
+        <result property="cancelTime" column="cancel_time" jdbcType="DATE"/>
+        <result property="finishTime" column="finish_time" jdbcType="DATE"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="updateTime" column="update_time" jdbcType="DATE"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="io.github.NEVERMAIN.domain.po.UserOrder">
+        insert into user_order (order_id, payment_transaction_id, user_id, order_time, total_amount, paid_amount,
+                                status, pay_url, pay_time, cancel_time, finish_time, create_time, update_time)
+        values (#{orderId}, #{paymentTransactionId}, #{userId}, #{orderTime}, #{totalAmount}, #{paidAmount}, #{status},
+                #{payUrl}, #{payTime}, #{cancelTime}, #{finishTime}, #{createTime}, #{updateTime})
+    </insert>
+
+
+    <select id="queryUnPayOrder" resultMap="UserOrderMap">
+        select id,
+               order_id,
+               payment_transaction_id,
+               user_id,
+               order_time,
+               total_amount,
+               paid_amount,
+               status,
+               pay_url,
+               pay_time,
+               cancel_time,
+               finish_time,
+               create_time,
+               update_time
+        from user_order
+        where user_id = #{userId}
+        order by id desc limit 1
+    </select>
+</mapper>

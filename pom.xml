@@ -116,6 +116,12 @@
                 <version>2.9.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.9.20</version> <!-- 根据实际需求选择版本 -->
+            </dependency>
+
             <!-- 支付宝沙箱支付对接文档：https://opendocs.alipay.com/common/02kkv7 -->
             <dependency>
                 <groupId>com.alipay.sdk</groupId>

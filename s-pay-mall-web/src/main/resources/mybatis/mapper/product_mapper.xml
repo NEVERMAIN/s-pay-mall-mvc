@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.NEVERMAIN.dao.ProductDao">
+
+    <resultMap id="productMap" type="io.github.NEVERMAIN.domain.po.Product">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="productId" column="product_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="stock" column="stock" jdbcType="INTEGER"/>
+        <result property="imageUrl" column="image_url" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="DATE"/>
+        <result property="updateTime" column="update_time" jdbcType="DATE"/>
+    </resultMap>
+
+
+    <insert id="insert" parameterType="io.github.NEVERMAIN.domain.po.Product">
+        insert into product (product_id, name, description, price, stock, image_url, status, create_time, update_time)
+        values (#{productId}, #{name}, #{description}, #{price}, #{stock}, #{imageUrl}, #{status}, #{createTime},
+                #{updateTime})
+    </insert>
+
+
+
+    <select id="queryProductByIds" resultMap="productMap">
+        select * from product where product_id in
+        <foreach collection="productIds" item="productId" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </select>
+
+    <select id="queryAllProducts" resultMap="productMap">
+        select * from product
+    </select>
+</mapper>

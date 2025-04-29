@@ -1,10 +1,9 @@
 package io.github.NEVERMAIN.service;
 
-import io.github.NEVERMAIN.domain.po.WxTemplateMessageVO;
+import io.github.NEVERMAIN.domain.vo.WxTemplateMessageVO;
 import io.github.NEVERMAIN.domain.req.WxQrcodeCreateReq;
 import io.github.NEVERMAIN.domain.res.WxAccessTokenRes;
 import io.github.NEVERMAIN.domain.res.WxQrcodeCreateRes;
-import org.springframework.web.bind.annotation.PostMapping;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
