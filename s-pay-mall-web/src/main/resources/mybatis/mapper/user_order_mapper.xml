@@ -42,6 +42,14 @@
           and status = "pay_wait"
     </update>
 
+    <update id="changeOrderClose" parameterType="io.github.NEVERMAIN.domain.po.UserOrder">
+        update user_order
+        set status      = #{status},
+            update_time = #{updateTime}
+        where order_id = #{orderId}
+          and status = "pay_wait"
+    </update>
+
     <select id="queryUnPayOrder" resultMap="UserOrderMap">
         select id,
                order_id,
@@ -61,4 +69,21 @@
         where user_id = #{userId}
         order by id desc limit 1
     </select>
+
+    <select id="queryNoPayNotifyOrder" resultType="java.lang.String">
+        select order_id as orderId
+        FROM user_order
+        where status = 'pay_wait'
+          AND NOW() >= order_time + INTERVAL 1 MINUTE
+        ORDER BY id ASC LIMIT 10
+    </select>
+
+    <select id="queryTimeoutCloseOrderList" resultType="java.lang.String">
+        select order_id as orderId
+        FROM user_order
+        where status = 'pay_wait'
+          AND NOW() >= order_time + INTERVAL 30 MINUTE
+        ORDER BY id ASC LIMIT 50
+    </select>
+
 </mapper>

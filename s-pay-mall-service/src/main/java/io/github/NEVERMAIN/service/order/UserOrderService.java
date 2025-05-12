@@ -141,6 +141,28 @@ public class UserOrderService implements IUserOrderService {
 
     }
 
+    @Override
+    public List<String> queryNoPayNotifyOrder() {
+        return userOrderDao.queryNoPayNotifyOrder();
+    }
+
+    @Override
+    public List<String> queryTimeoutCloseOrderList() {
+        return userOrderDao.queryTimeoutCloseOrderList();
+    }
+
+    @Override
+    public boolean changeOrderClose(String userOrderId) {
+        UserOrder userOrder = new UserOrder();
+        userOrder.setOrderId(userOrderId);
+        userOrder.setStatus(UserOrderStatusVO.CLOSE.getCode());
+        userOrder.setUpdateTime(new Date());
+
+        int result = userOrderDao.changeOrderClose(userOrder);
+
+        return result == 1;
+    }
+
     private static List<OrderItem> calculateOrderItems(List<Product> productList, Map<String, Integer> collect,
                                                        String orderId) {
         return productList.stream().map(product -> {
