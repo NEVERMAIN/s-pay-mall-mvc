@@ -6,9 +6,13 @@ import io.github.NEVERMAIN.domain.po.UserOrder;
 import io.github.NEVERMAIN.domain.req.ShopCartReq;
 import io.github.NEVERMAIN.domain.res.UserOrderRes;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IUserOrderService {
 
     UserOrderRes createOrder(ShopCartReq shopCartReq) throws AlipayApiException;
+
+    int changeOrderPaySuccess(String orderId, String paymentTransactionId, Date payTime);
+
 }

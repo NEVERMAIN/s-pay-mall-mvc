@@ -32,6 +32,16 @@
         where order_id = #{orderId}
     </update>
 
+    <update id="updateOrderPaySuccess" parameterType="io.github.NEVERMAIN.domain.po.UserOrder">
+        update user_order
+        set status                 = #{status},
+            payment_transaction_id = #{paymentTransactionId},
+            pay_time               = #{payTime},
+            update_time            = #{updateTime}
+        where order_id = #{orderId}
+          and status = "pay_wait"
+    </update>
+
     <select id="queryUnPayOrder" resultMap="UserOrderMap">
         select id,
                order_id,

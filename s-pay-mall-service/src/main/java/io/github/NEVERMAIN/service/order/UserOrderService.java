@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.google.common.eventbus.EventBus;
 import io.github.NEVERMAIN.dao.OrderItemDao;
 import io.github.NEVERMAIN.dao.ProductDao;
 import io.github.NEVERMAIN.dao.UserOrderDao;
@@ -47,11 +48,16 @@ public class UserOrderService implements IUserOrderService {
 
     private ProductDao productDao;
 
-    public UserOrderService(UserOrderDao userOrderDao, OrderItemDao orderItemDao, ProductDao productDao,AlipayClient alipayClient) {
+    private EventBus eventBus;
+
+
+    public UserOrderService(UserOrderDao userOrderDao, OrderItemDao orderItemDao, ProductDao productDao,
+                            AlipayClient alipayClient, EventBus eventBus) {
         this.userOrderDao = userOrderDao;
         this.orderItemDao = orderItemDao;
         this.productDao = productDao;
         this.alipayClient = alipayClient;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -75,7 +81,8 @@ public class UserOrderService implements IUserOrderService {
                         .build();
             }
             if (UserOrderStatusVO.CREATE.getCode().equals(unpaidOrder.getStatus()) && unpaidOrder.getPayUrl() == null) {
-                log.info("创建订单-存在，存在未创建支付单订单，创建支付单开始 userId:{} orderId:{}", shopCartReq.getUserId(), unpaidOrder.getOrderId());
+                log.info("创建订单-存在，存在未创建支付单订单，创建支付单开始 userId:{} orderId:{}", shopCartReq.getUserId(),
+                        unpaidOrder.getOrderId());
                 List<Product> productList = productDao.queryProductByIds(productIds);
                 String payUrl = doPrepareOrder(unpaidOrder, productList);
                 return UserOrderRes.builder()
@@ -116,6 +123,22 @@ public class UserOrderService implements IUserOrderService {
         userOrderRes.setPayUrl(payUrl);
         userOrderRes.setOrderId(userOrder.getOrderId());
         return userOrderRes;
+    }
+
+    @Override
+    public int changeOrderPaySuccess(String orderId, String paymentTransactionId, Date payTime) {
+        UserOrder userOrder = new UserOrder();
+        userOrder.setOrderId(orderId);
+        userOrder.setStatus(UserOrderStatusVO.PAY_SUCCESS.getCode());
+        userOrder.setPayTime(payTime);
+        userOrder.setPaymentTransactionId(paymentTransactionId);
+        userOrder.setUpdateTime(new Date());
+        int result = userOrderDao.updateOrderPaySuccess(userOrder);
+
+        eventBus.post(JSONObject.toJSONString(userOrder));
+
+        return result;
+
     }
 
     private static List<OrderItem> calculateOrderItems(List<Product> productList, Map<String, Integer> collect,

@@ -6,7 +6,7 @@ public enum UserOrderStatusVO {
 
     PAY_WAIT("pay_wait","待支付"),
 
-    pay_success("pay_success","支付成功"),
+    PAY_SUCCESS("pay_success","支付成功"),
 
     DEAL_DONE("deal_done","交易完成"),
 

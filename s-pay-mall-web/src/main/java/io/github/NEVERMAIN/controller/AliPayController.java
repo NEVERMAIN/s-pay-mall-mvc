@@ -14,6 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +47,7 @@ public class AliPayController {
                     .shopCartItems(shopCartItemList)
                     .build());
 
-            log.info("商品下单，根据商品ID创建支付单完成 userId:{}, orderId:{}", userId,userOrderRes.getOrderId());
+            log.info("商品下单，根据商品ID创建支付单完成 userId:{}, orderId:{}", userId, userOrderRes.getOrderId());
             return Response.<String>builder()
                     .code(Constants.ResponseCode.SUCCESS.getCode())
                     .info(Constants.ResponseCode.SUCCESS.getInfo())
@@ -94,6 +98,13 @@ public class AliPayController {
                     log.info("支付回调，买家付款金额: {}", params.get("buyer_pay_amount"));
                     log.info("支付回调，支付回调，更新订单 {}", tradeNo);
                     // 更新订单未已支付
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                    LocalDateTime date = LocalDateTime.parse(gmtPayment, formatter);
+                    Date payTime = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+
+                    userOrderService.changeOrderPaySuccess(tradeNo, alipayTradeNo, payTime);
                 }
 
             }
