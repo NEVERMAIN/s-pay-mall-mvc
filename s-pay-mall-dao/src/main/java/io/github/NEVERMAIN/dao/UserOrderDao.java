@@ -10,4 +10,5 @@ public interface UserOrderDao {
 
     UserOrder queryUnPayOrder(UserOrder userOrder );
 
+    int updateOrderPayInfo(UserOrder userOrder);
 }

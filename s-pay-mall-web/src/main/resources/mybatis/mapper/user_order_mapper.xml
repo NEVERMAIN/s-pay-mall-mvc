@@ -26,6 +26,11 @@
                 #{payUrl}, #{payTime}, #{cancelTime}, #{finishTime}, #{createTime}, #{updateTime})
     </insert>
 
+    <update id="updateOrderPayInfo" parameterType="io.github.NEVERMAIN.domain.po.UserOrder">
+        update user_order
+        set status = #{status} , pay_url = #{payUrl}, update_time = #{updateTime}
+        where order_id = #{orderId}
+    </update>
 
     <select id="queryUnPayOrder" resultMap="UserOrderMap">
         select id,
